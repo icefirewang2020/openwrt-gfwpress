@@ -1,3 +1,24 @@
+#termux make file
+TARGET = gfwpress
+CC = clang
+CFLAGS = -v -O3 -Wall -std=gnu89
+SRCS = encrypt.c client.c
+OBJS = $(SRCS:.c=.o)
+LFLAGS = -lssl -lcrypto
+LIBS = -fuse-ld=gold
 
-all: *.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o gfwpress $^ $(LDLIBS) -ansi -O3 -lssl -lcrypto -lpthread -Wall
+.PHONY: depend clean
+
+all: $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
+
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+
+clean:
+	$(RM) *.o *~ $(TARGET)
+
+depend: $(SRCS)
+	makedepend $(INCLUDES) $^
+
+# DO NOT DELETE THIS LINE -- make depend needs it
